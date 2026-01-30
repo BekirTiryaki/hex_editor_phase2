@@ -1,0 +1,25 @@
+@startuml
+actor User
+participant "main" as Main
+participant "parser" as Parser
+participant "editbuf" as EditBuf
+participant "fileio" as FileIO
+participant "viewer" as Viewer
+
+User -> Main: set <offset> <value>
+Main -> Parser: parse_offset(offset)
+Main -> Parser: parse_byte_value(value)
+Main -> EditBuf: cb_add(offset, value)
+Main -> User: Pending set...
+
+User -> Main: w
+Main -> User: Type YES...
+User -> Main: YES
+loop foreach pending change
+  Main -> FileIO: file_write_byte(offset, value)
+end
+Main -> EditBuf: cb_clear()
+Main -> Viewer: viewer_print_page()
+Main -> User: Committed.
+@enduml
+

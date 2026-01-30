@@ -1,0 +1,22 @@
+@startuml
+!pragma layout smetana
+skinparam componentStyle rectangle
+
+package "hex_editor" {
+  [main.c] as main
+  [viewer.c] as viewer
+  [parser.c] as parser
+  [fileio.c] as fileio
+  [editbuf.c] as editbuf
+
+  main --> viewer : viewer_print_page()
+  main --> parser : parse_offset(), parse_byte_value()
+  main --> fileio : file_get_size(), file_write_byte()
+  main --> editbuf : cb_add(), cb_get(), cb_clear()
+
+  viewer --> fileio : file_read_at()
+  viewer --> editbuf : cb_get()
+}
+
+@enduml
+
